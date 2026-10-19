@@ -3,6 +3,8 @@
  * Пустые массивы — это не баг: страницы показывают заглушку и ждут данных.
  */
 
+import { asset } from "./asset";
+
 export const site = {
   name: "Иван Севрюков",
   /** Латиница для бегущей строки первого экрана. */
@@ -70,7 +72,7 @@ export const projectGroups = [
 export const projects: Project[] = [
   {
     slug: "shtora", title: "Штора", year: "", role: "Swift / SwiftUI developer",
-    category: "Native macOS", image: "/projects/shtora.webp",
+    category: "Native macOS", image: asset("/projects/shtora.webp"),
     summary: "Интерфейс, который живёт в пустоте. Вырез MacBook как портал: пять модулей, одна мембрана, ноль лишних окон.",
     problem: "Лиминальное пространство между оборудованием и намерением. Там, где аппаратный вырез в корпусе принято считать дефектом, Штора видит портал. Это не приложение в привычном смысле, а мембрана: пространство, которое существует ровно до тех пор, пока оно нужно, а затем схлопывается обратно в ничто. Интерфейс, который не занимает место, а одалживает его у пустоты.",
     decision: "Прикосновение курсора пробуждает органику: плавные, пружинящие трансформации разворачивают панель из чёрной капли, как будто сам экран выдыхает. Внутри неё живёт пять модулей, и каждый отвечает за свой слой цифрового быта.",
@@ -86,7 +88,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sora", title: "Sora", year: "", role: "Telegram & AI developer",
-    category: "Telegram / AI platform", image: "/projects/sora.webp",
+    category: "Telegram / AI platform", image: asset("/projects/sora.webp"),
     summary: "AI-платформа автоматизации коммуникаций и продаж в Telegram. LLM-агенты, контекстная память, платежи и веб-панель оператора.",
     problem: "Асинхронная платформа для ведения клиентских диалогов, сопровождения воронки продаж и персонализированного взаимодействия с пользователями. Объединяет LLM-агентов, контекстную память, платёжные интеграции и веб-панель оператора.",
     decision: "Управление клиентским взаимодействием через конечный автомат с сохранением состояния, серверной валидацией переходов и типизированными ответами модели. Контекст диалога, профиль клиента и текущий этап воронки объединяются в динамические инструкции агента.",
@@ -107,7 +109,7 @@ export const projects: Project[] = [
   },
   {
     slug: "generative-media", title: "Generative Media Creator", year: "", role: "Generative Media Creator",
-    category: "AI / UGC / Visual production", image: "/projects/generative.webp",
+    category: "AI / UGC / Visual production", image: asset("/projects/generative.webp"),
     summary: "AI-контент и UGC: изображения, видео и рекламные креативы. LoRA, ComfyUI и автоматизация обработки на Python и ffmpeg.",
     problem: "Создание изображений и видео с помощью генеративных моделей: от визуальной идеи до обработки и сборки готового материала.",
     decision: "ComfyUI и RunningHub для сборки пайплайнов, обучение LoRA для настройки визуального языка, Python и ffmpeg для автоматизации обработки.",

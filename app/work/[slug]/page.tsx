@@ -4,6 +4,7 @@ import { CaseStudyRoute } from "@/components/case-study";
 import { bySlug, projects } from "@/lib/content";
 
 type Params = { slug: string };
+export const dynamicParams = false;
 
 /**
  * Cache Components требует непустой generateStaticParams. Пока projects пуст,

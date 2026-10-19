@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { asset } from "@/lib/asset";
 
-const videos = [1, 2, 3].map(index => ({ src: `/portfolio-motion-${index}.mp4`, alt: `Видео / 0${index}`, video: true }));
+const videos = [1, 2, 3].map(index => ({ src: asset(`/portfolio-motion-${index}.mp4`), alt: `Видео / 0${index}`, video: true }));
 const photos = ["Предметная съёмка — композиция 01", "Предметная съёмка — композиция 02", "Porsche 911 GT3 — визуальный коллаж", "UGC — продукт в кадре"]
-  .map((alt, index) => ({ src: `/portfolio-photo-${index + 1}.webp`, alt, video: false }));
+  .map((alt, index) => ({ src: asset(`/portfolio-photo-${index + 1}.webp`), alt, video: false }));
 
 function Slider({ title, items }: { title: string; items: typeof videos }) {
   const [active, setActive] = useState(0);

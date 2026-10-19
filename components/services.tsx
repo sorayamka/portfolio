@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/asset";
 
 const services = [
   { title: "AI-персонажи, контент и UGC", description: "Виртуальные персонажи, AI-контент и UGC для соцсетей и рекламы: внешность, история, голос, фото и видео с узнаваемым персонажем в каждом кадре.", tools: ["UGC", "ComfyUI", "Seedream", "Kling", "Wan", "LoRA"] },
@@ -107,7 +108,7 @@ export function Services() {
           <p className="services-intro">От идеи до продукта.<br /><span>Пять направлений.</span></p>
         </div>
         <div className="services-stage">
-          <div className="services-film" aria-label="Вращающийся скелетный заяц"><video src="/skeleton-optimized.mp4" autoPlay muted loop playsInline preload="auto" /></div>
+          <div className="services-film" aria-label="Вращающийся скелетный заяц"><video src={asset("/skeleton-optimized.mp4")} autoPlay muted loop playsInline preload="auto" /></div>
           {services.map((service, index) => (
             <div key={service.title} className="service-detail-container" data-side={index % 2 === 0 ? "left" : "right"}>
               <div id={`skill-panel-${index}`} role="tabpanel" aria-labelledby={`skill-tab-${index}`} aria-hidden={index !== active} className={`service-detail${index === active ? " is-active" : ""}`}>
