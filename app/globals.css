@@ -497,6 +497,9 @@
   .services-scroll .services-film { height: 65%; top: 8%; }
   .services-scroll .services-film video { width: 100%; }
   .services-scroll .service-detail-container { top: auto; bottom: 75px; width: auto; left: 20px !important; right: 20px !important; padding: 18px; background: linear-gradient(100deg, #000e, #000b); }
+  .services-scroll .service-detail-container[data-active="false"] { display: none; }
+  .services-scroll .service-detail-container[data-active="true"] { z-index: 3; opacity: 1; }
+  .services-scroll .service-detail-index > span:last-child { font-size: 10px; color: var(--color-amber); }
   .services-scroll .service-detail { gap: 10px; }
   .services-scroll .service-detail-copy h3 { font-size: 26px; margin-bottom: 10px; }
   .services-scroll .service-detail-copy p { font-size: 11px; line-height: 1.6; }

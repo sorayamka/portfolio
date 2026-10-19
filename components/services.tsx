@@ -118,7 +118,7 @@ export function Services() {
         <div className="services-stage">
           <div className="services-film" aria-label="Вращающийся скелетный заяц"><video src={asset("/skeleton-optimized.mp4")} autoPlay muted loop playsInline preload="auto" /></div>
           {services.map((service, index) => (
-            <div key={service.title} className="service-detail-container" data-side={index % 2 === 0 ? "left" : "right"}>
+            <div key={service.title} className="service-detail-container" data-active={index === active} data-side={index % 2 === 0 ? "left" : "right"}>
               <div id={`skill-panel-${index}`} role="tabpanel" aria-labelledby={`skill-tab-${index}`} aria-hidden={index !== active} className={`service-detail${index === active ? " is-active" : ""}`}>
                 <div className="service-detail-index"><span className="label text-amber">EXPERTISE / 0{index + 1}</span></div>
                 <div className="service-detail-copy"><h3>{service.title}</h3><p>{service.description}</p></div>
