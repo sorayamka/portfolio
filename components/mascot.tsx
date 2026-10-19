@@ -32,9 +32,17 @@ export function Mascot() {
     let previousX: number | null = null;
     let previousY: number | null = null;
     let motionBlur = 0;
+    let width = wrap.offsetWidth;
+    const pointer = { x: 0, y: 0 };
+    const onPointer = (event: PointerEvent) => {
+      pointer.x = event.clientX / innerWidth * 2 - 1;
+      pointer.y = 1 - event.clientY / innerHeight * 2;
+    };
+    window.addEventListener("pointermove", onPointer, { passive: true });
     const skills = document.getElementById("skills");
     let destination = window.innerHeight;
     const measure = () => {
+      width = wrap.offsetWidth;
       destination = skills ? skills.getBoundingClientRect().top + window.scrollY : window.innerHeight;
     };
     measure();
@@ -78,8 +86,8 @@ export function Mascot() {
       right.style.opacity = String(wink);
       winkArc.style.opacity = String(1 - wink);
 
-      const px = reducedMotion.matches ? 0 : view.pointer.x;
-      const py = reducedMotion.matches ? 0 : view.pointer.y;
+      const px = reducedMotion.matches ? 0 : pointer.x;
+      const py = reducedMotion.matches ? 0 : pointer.y;
       const response = 1 - Math.exp(-24 * dt);
       gazeX += (px * 18 - gazeX) * response;
       gazeY += (-py * 12 - gazeY) * response;
@@ -88,7 +96,7 @@ export function Mascot() {
       wrap.style.visibility = progress >= 1 ? "hidden" : "visible";
       wrap.style.opacity = "1";
       const angle = progress * Math.PI * 0.5;
-      const arcX = Math.sin(angle) * (window.innerWidth * 0.5 + wrap.offsetWidth * 0.6);
+      const arcX = Math.sin(angle) * (window.innerWidth * 0.5 + width * 0.6);
       const arcY = (1 - Math.cos(angle)) * window.innerHeight * 0.32;
       const float = reducedMotion.matches ? 0 : Math.sin(t * 0.72) * 4;
       const x = arcX + px * 9 * (1 - progress);
@@ -100,7 +108,6 @@ export function Mascot() {
       previousY = y;
       const targetBlur = reducedMotion.matches ? 0 : Math.min(5, Math.max(0, speed - 65) * 0.006);
       motionBlur += (targetBlur - motionBlur) * (1 - Math.exp(-16 * dt));
-      wrap.style.filter = motionBlur > 0.03 ? `blur(${motionBlur.toFixed(2)}px)` : "none";
       wrap.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       gaze.style.transform = `translate(calc(-50% + ${gazeX}px), calc(-50% + ${gazeY}px))`;
       raf = requestAnimationFrame(tick);
@@ -109,6 +116,7 @@ export function Mascot() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", measure);
+      window.removeEventListener("pointermove", onPointer);
       observer.disconnect();
     };
   }, [pathname]);
@@ -125,7 +133,7 @@ export function Mascot() {
     >
       <div className="mascot-head" style={{ aspectRatio: "1217 / 1328" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={asset("/mascot/rabbit-new.webp")} width={1217} height={1328} fetchPriority="high" decoding="async" alt="" className="mascot-img" draggable={false} />
+        <img src={asset("/mascot/rabbit-new.webp")} srcSet={`${asset("/mascot/rabbit-800.webp")} 800w, ${asset("/mascot/rabbit-new.webp")} 1217w`} sizes="(max-width: 700px) 90vw, 50vw" width={1217} height={1328} loading="eager" fetchPriority="high" decoding="async" alt="" className="mascot-img" draggable={false} />
         <div ref={gazeRef} className="mascot-gaze" aria-hidden>
           <span ref={leftEyeRef} className="mascot-eye" />
           <span ref={rightEyeRef} className="mascot-eye" />

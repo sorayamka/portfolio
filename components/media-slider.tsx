@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { asset } from "@/lib/asset";
 import { useLang, useText } from "./lang-provider";
 
-type MediaItem = { src: string; alt: string; video: boolean; ratio?: number };
-const videos: MediaItem[] = [1, 2, 3, 4].map(index => ({ src: asset(`/portfolio-motion-${index}.mp4`), alt: `Video / 0${index}`, video: true }));
+type MediaItem = { src: string; alt: string; video: boolean; ratio?: number; poster?: string };
+const videos: MediaItem[] = [1, 2, 3, 4].map(index => ({ src: asset(`/portfolio-motion-${index}.mp4`), poster: asset(`/portfolio-poster-${index}.webp`), alt: `Video / 0${index}`, video: true }));
 const photos = ["Предметная съёмка — композиция 01", "Предметная съёмка — композиция 02", "Porsche 911 GT3 — визуальный коллаж", "UGC — продукт в кадре"]
   .map((alt, index) => ({ src: asset(`/portfolio-photo-${index + 1}.jpg`), alt, video: false }));
 const extraPhotos: MediaItem[] = [
@@ -22,9 +22,12 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
   const { lang } = useLang();
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const near = useInView(sectionRef, { margin: "300px 0px", once: true });
   const images = useRef(new Map<string, Promise<void>>());
   const request = useRef(0);
   const [pending, setPending] = useState(false);
+  const [playing, setPlaying] = useState<Set<string>>(new Set());
   const responsive = (src: string) => /portfolio-(photo|extra)-\d+\./.test(src);
   const sourceSet = (src: string) => [640, 1200].map(width => `${src.replace(/\.(jpg|webp)$/, `-${width}.webp`)} ${width}w`).join(", ");
   const sizes = "(max-width: 700px) 80vw, 40vw";
@@ -55,14 +58,15 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
   };
   const move = (step: number) => { void select(active + step); };
   useEffect(() => {
+    if (!near) return;
     for (const index of [active, (active + 1) % items.length, (active - 1 + items.length) % items.length]) {
       void prepare(index).catch(() => { images.current.delete(items[index].src); });
     }
   // The gallery sources are fixed; only the selected slide changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  }, [active, near]);
   return (
-    <section className="media-showcase" aria-label={t(title)} aria-roledescription={lang === "en" ? "carousel" : "карусель"}>
+    <section ref={sectionRef} className="media-showcase" aria-label={t(title)} aria-roledescription={lang === "en" ? "carousel" : "карусель"}>
       <div className="media-heading">
         <div><span className="label">AI / UGC · VISUAL EXPLORATIONS</span><h2>{t(title)}</h2></div>
         <div className="media-controls" aria-busy={pending}><span className="label" aria-live="polite">{pending ? "…" : `0${active + 1}`} / 0{items.length}</span><button type="button" aria-label={`${lang === "en" ? "Previous" : "Предыдущий"} — ${t(title)}`} onClick={() => move(-1)}>↖</button><button type="button" aria-label={`${lang === "en" ? "Next" : "Следующий"} — ${t(title)}`} onClick={() => move(1)}>↘</button></div>
@@ -82,9 +86,13 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
             drag={offset === 0 ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={.18}
             onDragEnd={(_, info) => { if (Math.abs(info.offset.x) > 45 || Math.abs(info.velocity.x) > 300) move(info.offset.x < 0 ? 1 : -1); }}>
             <div className="media-frame" style={item.ratio ? { aspectRatio: item.ratio, height: "auto" } : undefined}>{item.video
-              ? <video src={offset === 0 ? item.src : undefined} autoPlay muted loop playsInline preload="metadata" aria-label={t(item.alt)} disablePictureInPicture />
+              ? <>
+                {near && visible && <img src={item.poster} alt={t(item.alt)} width={360} height={640} decoding="async" draggable={false} />}
+                {near && offset === 0 && playing.has(item.src) && <video className="gallery-playing-video" src={item.src} poster={item.poster} autoPlay muted loop playsInline preload="auto" aria-label={t(item.alt)} disablePictureInPicture disableRemotePlayback controlsList="nofullscreen nodownload noremoteplayback" />}
+                {offset === 0 && !playing.has(item.src) && <button className="gallery-play" type="button" aria-label={lang === "en" ? "Play video" : "Воспроизвести видео"} onPointerDown={event => event.stopPropagation()} onClick={() => setPlaying(previous => new Set(previous).add(item.src))}>▶</button>}
+              </>
               // eslint-disable-next-line @next/next/no-img-element
-              : <img src={item.src} srcSet={responsive(item.src) ? sourceSet(item.src) : undefined} sizes={sizes} width={1200} height={Math.round(1200 / (item.ratio ?? (896 / 1200)))} alt={t(item.alt)} loading={visible ? "eager" : "lazy"} fetchPriority={offset === 0 ? "high" : "low"} decoding="async" draggable={false} />}</div>
+              : near && visible ? <img src={item.src} srcSet={responsive(item.src) ? sourceSet(item.src) : undefined} sizes={sizes} width={1200} height={Math.round(1200 / (item.ratio ?? (896 / 1200)))} alt={t(item.alt)} loading="eager" fetchPriority={offset === 0 ? "high" : "low"} decoding="async" draggable={false} /> : null}</div>
           </motion.div>;
         })}
       </div>
