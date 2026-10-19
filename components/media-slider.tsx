@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { asset } from "@/lib/asset";
 import { useLang, useText } from "./lang-provider";
@@ -22,12 +22,50 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
   const { lang } = useLang();
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
-  const move = (step: number) => setActive(value => (value + step + items.length) % items.length);
+  const images = useRef(new Map<string, Promise<void>>());
+  const request = useRef(0);
+  const [pending, setPending] = useState(false);
+  const responsive = (src: string) => /portfolio-(photo|extra)-\d+\./.test(src);
+  const sourceSet = (src: string) => [640, 1200].map(width => `${src.replace(/\.(jpg|webp)$/, `-${width}.webp`)} ${width}w`).join(", ");
+  const sizes = "(max-width: 700px) 80vw, 40vw";
+  const prepare = (index: number) => {
+    const item = items[index];
+    if (item.video) return Promise.resolve();
+    if (!images.current.has(item.src)) {
+      const image = new Image();
+      image.decoding = "async";
+      if (responsive(item.src)) { image.sizes = sizes; image.srcset = sourceSet(item.src); }
+      image.src = item.src;
+      images.current.set(item.src, image.decode());
+    }
+    return images.current.get(item.src)!;
+  };
+  const select = async (index: number) => {
+    const next = (index + items.length) % items.length;
+    const id = ++request.current;
+    setPending(true);
+    try {
+      await prepare(next);
+      if (id === request.current) setActive(next);
+    } catch {
+      images.current.delete(items[next].src);
+    } finally {
+      if (id === request.current) setPending(false);
+    }
+  };
+  const move = (step: number) => { void select(active + step); };
+  useEffect(() => {
+    for (const index of [active, (active + 1) % items.length, (active - 1 + items.length) % items.length]) {
+      void prepare(index).catch(() => { images.current.delete(items[index].src); });
+    }
+  // The gallery sources are fixed; only the selected slide changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
   return (
     <section className="media-showcase" aria-label={t(title)} aria-roledescription={lang === "en" ? "carousel" : "карусель"}>
       <div className="media-heading">
         <div><span className="label">AI / UGC · VISUAL EXPLORATIONS</span><h2>{t(title)}</h2></div>
-        <div className="media-controls"><span className="label" aria-live="polite">0{active + 1} / 0{items.length}</span><button type="button" aria-label={`${lang === "en" ? "Previous" : "Предыдущий"} — ${t(title)}`} onClick={() => move(-1)}>↖</button><button type="button" aria-label={`${lang === "en" ? "Next" : "Следующий"} — ${t(title)}`} onClick={() => move(1)}>↘</button></div>
+        <div className="media-controls" aria-busy={pending}><span className="label" aria-live="polite">{pending ? "…" : `0${active + 1}`} / 0{items.length}</span><button type="button" aria-label={`${lang === "en" ? "Previous" : "Предыдущий"} — ${t(title)}`} onClick={() => move(-1)}>↖</button><button type="button" aria-label={`${lang === "en" ? "Next" : "Следующий"} — ${t(title)}`} onClick={() => move(1)}>↘</button></div>
       </div>
       <div className={`diagonal-stage diagonal-stage--${items[0].video ? "video" : "photo"}`} tabIndex={0} onKeyDown={event => {
         if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); move(event.key === "ArrowRight" ? 1 : -1); }
@@ -46,11 +84,11 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
             <div className="media-frame" style={item.ratio ? { aspectRatio: item.ratio, height: "auto" } : undefined}>{item.video
               ? <video src={offset === 0 ? item.src : undefined} autoPlay muted loop playsInline preload="metadata" aria-label={t(item.alt)} disablePictureInPicture />
               // eslint-disable-next-line @next/next/no-img-element
-              : <img src={item.src} alt={t(item.alt)} loading="lazy" draggable={false} />}</div>
+              : <img src={item.src} srcSet={responsive(item.src) ? sourceSet(item.src) : undefined} sizes={sizes} width={1200} height={Math.round(1200 / (item.ratio ?? (896 / 1200)))} alt={t(item.alt)} loading={visible ? "eager" : "lazy"} fetchPriority={offset === 0 ? "high" : "low"} decoding="async" draggable={false} />}</div>
           </motion.div>;
         })}
       </div>
-      <div className="diagonal-pagination">{items.map((item, index) => <button type="button" key={item.src} aria-label={`${t(title)} — ${index + 1}`} aria-pressed={index === active} onClick={() => setActive(index)} />)}<span className="label">{t("ЛИСТАЙТЕ ИЛИ ПОТЯНИТЕ ↗")}</span></div>
+      <div className="diagonal-pagination">{items.map((item, index) => <button type="button" key={item.src} aria-label={`${t(title)} — ${index + 1}`} aria-pressed={index === active} onClick={() => { void select(index); }} />)}<span className="label">{t("ЛИСТАЙТЕ ИЛИ ПОТЯНИТЕ ↗")}</span></div>
     </section>
   );
 }

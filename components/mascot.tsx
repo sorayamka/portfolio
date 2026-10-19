@@ -125,7 +125,7 @@ export function Mascot() {
     >
       <div className="mascot-head" style={{ aspectRatio: "1217 / 1328" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={asset("/mascot/rabbit-new.webp")} alt="" className="mascot-img" draggable={false} />
+        <img src={asset("/mascot/rabbit-new.webp")} width={1217} height={1328} fetchPriority="high" decoding="async" alt="" className="mascot-img" draggable={false} />
         <div ref={gazeRef} className="mascot-gaze" aria-hidden>
           <span ref={leftEyeRef} className="mascot-eye" />
           <span ref={rightEyeRef} className="mascot-eye" />
