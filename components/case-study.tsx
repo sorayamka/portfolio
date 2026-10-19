@@ -8,6 +8,7 @@ import { Reveal } from "./reveal";
 import { bySlug, type Project } from "@/lib/content";
 import { useState } from "react";
 import { MediaSliders } from "./media-slider";
+import { SoraChat } from "./sora-chat";
 
 /** Порядок секций кейса: каждая отвечает на следующий вопрос читателя. */
 const SECTIONS = [
@@ -44,12 +45,12 @@ function CaseStudy({ project }: { project: Project }) {
         </p>
       </Reveal>
 
-      <div className={`case-art case-art--${project.slug}`}>
+      {project.slug === "sora" ? <SoraChat /> : <div className={`case-art case-art--${project.slug}`}>
         <span className="case-art-coordinate">OBJECT / {project.slug.toUpperCase()}</span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={project.image} alt={project.title} />
         <span className="case-art-coordinate case-art-coordinate--bottom">DESIGN × ENGINEERING</span>
-      </div>
+      </div>}
       </div>
 
       {project.slug === "generative-media" && <MediaSliders />}
