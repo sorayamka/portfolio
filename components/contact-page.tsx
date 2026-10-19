@@ -5,6 +5,7 @@ import { PageHeader } from "./ui";
 import { Magnetic } from "./magnetic";
 import { Reveal } from "./reveal";
 import { site } from "@/lib/content";
+import { useText } from "./lang-provider";
 
 const CHANNELS = [
   { label: "Telegram", href: site.telegram, note: "самый быстрый канал", external: true },
@@ -13,9 +14,10 @@ const CHANNELS = [
 ] as const;
 
 export function ContactPage() {
+  const t = useText();
   return (
     <main className="relative z-10 px-5 pt-32 pb-24 sm:px-8 sm:pt-40 sm:pb-32">
-      <PageHeader index="03" title="Контакты" note={site.timezone} />
+      <PageHeader index="03" title={t("Контакты")} note={site.timezone} />
 
       <ul className="flex flex-col">
         {CHANNELS.map((c, i) => (
@@ -34,7 +36,7 @@ export function ContactPage() {
                   >
                     {c.label}
                   </span>
-                  <span className="label">{c.note}</span>
+                  <span className="label">{t(c.note)}</span>
                 </span>
                 <span className="label text-smoke transition-colors duration-500 group-hover:text-amber">
                   ↗
@@ -47,26 +49,26 @@ export function ContactPage() {
 
       <Reveal className="mt-16 grid gap-8 border-t border-bone/10 pt-8 sm:grid-cols-12">
         <div className="sm:col-span-4">
-          <span className="label">Где я</span>
+          <span className="label">{t("Где я")}</span>
           <p className="mt-3 font-mono text-[0.8rem] text-fog">{site.coords}</p>
-          <p className="mt-1 font-mono text-[0.8rem] text-smoke">{site.city}, {site.timezone}</p>
+          <p className="mt-1 font-mono text-[0.8rem] text-smoke">{t(site.city)}, {site.timezone}</p>
         </div>
         <div className="sm:col-span-4">
-          <span className="label">Статус</span>
+          <span className="label">{t("Статус")}</span>
           <div className="mt-3 flex items-center gap-2.5">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber opacity-60" />
               <span className="relative inline-flex size-2 rounded-full bg-amber" />
             </span>
-            <span className="font-mono text-[0.8rem] text-fog">открыт к проектам</span>
+            <span className="font-mono text-[0.8rem] text-fog">{t("открыт к проектам")}</span>
           </div>
         </div>
         <div className="sm:col-span-4">
-          <span className="label">Ещё</span>
+          <span className="label">{t("Ещё")}</span>
           <ul className="mt-3 flex flex-col gap-1.5">
             <li>
               <Link href="/work" className="text-sm text-fog transition-colors duration-300 hover:text-amber">
-                 портфолио →
+                 {t("портфолио →")}
               </Link>
             </li>
           </ul>

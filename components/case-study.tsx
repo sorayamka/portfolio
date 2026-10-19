@@ -9,6 +9,8 @@ import { bySlug, type Project } from "@/lib/content";
 import { useState } from "react";
 import { MediaSliders } from "./media-slider";
 import { SoraChat } from "./sora-chat";
+import { useLang, useText } from "./lang-provider";
+import { localizeProject } from "@/lib/translations";
 
 /** Порядок секций кейса: каждая отвечает на следующий вопрос читателя. */
 const SECTIONS = [
@@ -19,13 +21,16 @@ const SECTIONS = [
   { key: "outcome", title: "Итог", q: "что изменилось" },
 ] as const;
 
-function CaseStudy({ project }: { project: Project }) {
+function CaseStudy({ project: original }: { project: Project }) {
+  const { lang } = useLang();
+  const t = useText();
+  const project = localizeProject(original, lang);
   const [selectedFeature, setSelectedFeature] = useState(0);
   return (
     <main className="case-page relative z-10 px-5 pt-32 pb-24 sm:px-8 sm:pt-40 sm:pb-32">
       <Reveal className="mb-10 flex items-center gap-3">
         <Link href="/work" className="label text-smoke transition-colors duration-300 hover:text-amber">
-          ← портфолио
+          {t("← портфолио")}
         </Link>
         <span className="label text-bone/25">/</span>
         <span className="label">{project.slug}</span>
@@ -60,7 +65,7 @@ function CaseStudy({ project }: { project: Project }) {
           {project.features.map((feature, index) => <button key={feature.title} onClick={() => setSelectedFeature(index)} aria-pressed={index === selectedFeature}><span>0{index + 1}</span>{feature.title}<span>↗</span></button>)}
         </div>
         <div className="case-module-detail" key={selectedFeature}>
-          <span className="label text-amber">ВНУТРИ ПРОЕКТА / {String(selectedFeature + 1).padStart(2, "0")}</span>
+          <span className="label text-amber">{t("ВНУТРИ ПРОЕКТА")} / {String(selectedFeature + 1).padStart(2, "0")}</span>
           <h2>{project.features[selectedFeature].title}</h2>
           <p>{project.features[selectedFeature].description}</p>
         </div>
@@ -70,8 +75,8 @@ function CaseStudy({ project }: { project: Project }) {
         {SECTIONS.map((s, i) => (
           <Reveal key={s.key} delay={i * 60} className="grid gap-4 border-t border-bone/10 pt-6 sm:grid-cols-12">
             <div className="sm:col-span-3">
-              <h2 className="label">{s.title}</h2>
-              <p className="label mt-1.5 text-bone/25">{s.q}</p>
+              <h2 className="label">{t(s.title)}</h2>
+              <p className="label mt-1.5 text-bone/25">{t(s.q)}</p>
             </div>
             <div className="sm:col-span-9">
               {s.key === "stack" ? (
@@ -102,7 +107,7 @@ function CaseStudy({ project }: { project: Project }) {
       </div>
 
       <section className="mt-20 border-t border-bone/10 pt-8">
-        <h2 className="label mb-8 text-amber">Ключевые возможности</h2>
+        <h2 className="label mb-8 text-amber">{t("Ключевые возможности")}</h2>
         <div className="grid gap-6 sm:grid-cols-2">
           {project.features.map((feature, index) => (
             <article key={feature.title} className="border-t border-bone/10 py-6">
@@ -138,6 +143,7 @@ function CaseStudy({ project }: { project: Project }) {
 }
 
 export function CaseStudyRoute({ slug }: { slug: string }) {
+  const t = useText();
   const project = bySlug(slug);
   if (!project) notFound();
 
@@ -146,7 +152,7 @@ export function CaseStudyRoute({ slug }: { slug: string }) {
       <CaseStudy project={project} />
       <div className="relative z-10 px-5 pb-24 sm:px-8">
         <Link href="/work" className="label text-bone/60 transition-colors duration-300 hover:text-amber">
-          ← ко всем проектам
+          {t("← ко всем проектам")}
         </Link>
       </div>
     </>

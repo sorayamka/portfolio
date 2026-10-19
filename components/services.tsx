@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/asset";
+import { useText } from "./lang-provider";
 
 const services = [
   { title: "AI-персонажи, контент и UGC", description: "Виртуальные персонажи, AI-контент и UGC для соцсетей и рекламы: внешность, история, голос, фото и видео с узнаваемым персонажем в каждом кадре.", tools: ["UGC", "ComfyUI", "Seedream", "Kling", "Wan", "LoRA"] },
@@ -12,6 +13,7 @@ const services = [
 ];
 
 export function Services() {
+  const t = useText();
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
@@ -112,8 +114,8 @@ export function Services() {
     <section ref={sectionRef} id="skills" className="services-section services-scroll relative" aria-labelledby="services-title">
       <div className="services-sticky">
         <div className="services-heading">
-          <div><p className="label text-amber mb-5">01 / EXPERTISE & SERVICES</p><h2 id="services-title" className="display-lg">Навыки<span className="services-title-dot">.</span></h2></div>
-          <p className="services-intro">От идеи до продукта.<br /><span>Пять направлений.</span></p>
+          <div><p className="label text-amber mb-5">01 / EXPERTISE & SERVICES</p><h2 id="services-title" className="display-lg">{t("Навыки")}<span className="services-title-dot">.</span></h2></div>
+          <p className="services-intro">{t("От идеи до продукта.")}<br /><span>{t("Пять направлений.")}</span></p>
         </div>
         <div className="services-stage">
           <div className="services-film" aria-label="Вращающийся скелетный заяц"><video src={asset("/skeleton-optimized.mp4")} autoPlay muted loop playsInline preload="auto" /></div>
@@ -121,13 +123,13 @@ export function Services() {
             <div key={service.title} className="service-detail-container" data-active={index === active} data-side={index % 2 === 0 ? "left" : "right"}>
               <div id={`skill-panel-${index}`} role="tabpanel" aria-labelledby={`skill-tab-${index}`} aria-hidden={index !== active} className={`service-detail${index === active ? " is-active" : ""}`}>
                 <div className="service-detail-index"><span className="label text-amber">EXPERTISE / 0{index + 1}</span></div>
-                <div className="service-detail-copy"><h3>{service.title}</h3><p>{service.description}</p></div>
-                <div className="service-detail-tools"><ul>{service.tools.map(tool => <li key={tool}>{tool}</li>)}</ul></div>
+                <div className="service-detail-copy"><h3>{t(service.title)}</h3><p>{t(service.description)}</p></div>
+                <div className="service-detail-tools"><ul>{service.tools.map(tool => <li key={tool}>{t(tool)}</li>)}</ul></div>
               </div>
             </div>
           ))}
           <div className="services-scroll-progress" role="tablist" aria-label={`Навык ${active + 1} из 5`}>
-            {services.map((service, index) => <button key={service.title} type="button" role="tab" id={`skill-tab-${index}`} aria-controls={`skill-panel-${index}`} aria-selected={index === active} aria-label={service.title} className="skill-tab" onClick={() => selectSkill(index)}><span>0{index + 1}</span></button>)}
+            {services.map((service, index) => <button key={service.title} type="button" role="tab" id={`skill-tab-${index}`} aria-controls={`skill-panel-${index}`} aria-selected={index === active} aria-label={t(service.title)} className="skill-tab" onClick={() => selectSkill(index)}><span>0{index + 1}</span></button>)}
             <span className="label">0{active + 1} / 05 — SCROLL TO EXPLORE</span>
           </div>
         </div>

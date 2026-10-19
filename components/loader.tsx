@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLang } from "./lang-provider";
 
 const GLYPHS = ["|", "/", "-", "\\", "#", "+", "=", "*", ".", " "];
 const BOOT = [
@@ -12,6 +13,7 @@ const BOOT = [
 ];
 
 export function Loader({ onDone }: { onDone?: () => void }) {
+  const { lang } = useLang();
   const [progress, setProgress] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -124,7 +126,7 @@ export function Loader({ onDone }: { onDone?: () => void }) {
 
       <div className="flex items-end justify-between gap-6">
         <span className="label max-w-[16rem] leading-[1.5]">
-          москва · 55.7558°n 37.6173°e
+          {lang === "en" ? "moscow" : "москва"} · 55.7558°n 37.6173°e
         </span>
         <span className="caret label text-amber" />
       </div>

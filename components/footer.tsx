@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useLang } from "./lang-provider";
+import { useLang, useText } from "./lang-provider";
 import { Magnetic } from "./magnetic";
 import { Reveal } from "./reveal";
 import { nav, site, YEAR } from "@/lib/content";
 
 export function Footer() {
   const { copy } = useLang();
+  const t = useText();
 
   return (
     <footer className="relative z-10 border-t border-bone/10 px-5 pt-14 pb-8 sm:px-8 sm:pt-20">
@@ -45,12 +46,12 @@ export function Footer() {
         </Reveal>
 
         <div className="sm:col-span-3 sm:col-start-6">
-          <span className="label">Разделы</span>
+          <span className="label">{t("Разделы")}</span>
           <ul className="mt-6 flex flex-col gap-2.5">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="text-sm text-fog transition-colors duration-300 hover:text-amber">
-                  {item.label}
+                  {t(item.label)}
                 </Link>
               </li>
             ))}
@@ -70,7 +71,7 @@ export function Footer() {
           </span>
         </div>
         <span className="label">
-          © {YEAR} {site.name} · {copy.rights}
+          © {YEAR} {t(site.name)} · {copy.rights}
         </span>
       </div>
     </footer>
