@@ -95,12 +95,10 @@ export function Mascot() {
       wrap.style.clipPath = "none";
       wrap.style.visibility = progress >= 1 ? "hidden" : "visible";
       wrap.style.opacity = "1";
-      const angle = progress * Math.PI * 0.5;
-      const arcX = Math.sin(angle) * (window.innerWidth * 0.5 + width * 0.6);
-      const arcY = (1 - Math.cos(angle)) * window.innerHeight * 0.32;
+      const exitX = progress * (window.innerWidth * 0.5 + width * 0.6);
       const float = reducedMotion.matches ? 0 : Math.sin(t * 0.72) * 4;
-      const x = arcX + px * 9 * (1 - progress);
-      const y = arcY + (-py * 7 - float) * (1 - progress);
+      const x = exitX + px * 9 * (1 - progress);
+      const y = (-py * 7 - float) * (1 - progress);
       const speed = previousX === null || previousY === null
         ? 0
         : Math.hypot(x - previousX, y - previousY) / Math.max(dt, 0.001);
