@@ -87,9 +87,9 @@ function Slider({ title, items }: { title: string; items: MediaItem[] }) {
             onDragEnd={(_, info) => { if (Math.abs(info.offset.x) > 45 || Math.abs(info.velocity.x) > 300) move(info.offset.x < 0 ? 1 : -1); }}>
             <div className="media-frame" style={item.ratio ? { aspectRatio: item.ratio, height: "auto" } : undefined}>{item.video
               ? <>
-                {near && visible && <img src={item.poster} alt={t(item.alt)} width={360} height={640} decoding="async" draggable={false} />}
+                <img src={item.poster} alt={t(item.alt)} width={360} height={640} loading="eager" fetchPriority={offset === 0 ? "high" : "low"} decoding="async" draggable={false} />
                 {near && offset === 0 && playing.has(item.src) && <video className="gallery-playing-video" src={item.src} poster={item.poster} autoPlay muted loop playsInline preload="auto" aria-label={t(item.alt)} disablePictureInPicture disableRemotePlayback controlsList="nofullscreen nodownload noremoteplayback" />}
-                {offset === 0 && !playing.has(item.src) && <button className="gallery-play" type="button" aria-label={lang === "en" ? "Play video" : "Воспроизвести видео"} onPointerDown={event => event.stopPropagation()} onClick={() => setPlaying(previous => new Set(previous).add(item.src))}>▶</button>}
+                {!playing.has(item.src) && <button className="gallery-play" type="button" tabIndex={offset === 0 ? 0 : -1} aria-label={lang === "en" ? "Play video" : "Воспроизвести видео"} onPointerDown={event => event.stopPropagation()} onClick={() => setPlaying(previous => new Set(previous).add(item.src))}><svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden><path d="M5 3.5C3.7 2.75 2 3.69 2 5.2v13.6c0 1.51 1.7 2.45 3 1.7l12-6.8c1.35-.77 1.35-2.63 0-3.4L5 3.5Z" fill="currentColor" /></svg><span>PLAY</span></button>}
               </>
               // eslint-disable-next-line @next/next/no-img-element
               : near && visible ? <img src={item.src} srcSet={responsive(item.src) ? sourceSet(item.src) : undefined} sizes={sizes} width={1200} height={Math.round(1200 / (item.ratio ?? (896 / 1200)))} alt={t(item.alt)} loading="eager" fetchPriority={offset === 0 ? "high" : "low"} decoding="async" draggable={false} /> : null}</div>
