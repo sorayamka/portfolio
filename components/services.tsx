@@ -29,6 +29,7 @@ export function Services() {
     let lastDirection = 0;
     let frame = 0;
     let previousY = window.scrollY;
+    const mobile = matchMedia("(max-width: 700px), (pointer: coarse)");
     const measure = () => { top = section.getBoundingClientRect().top + window.scrollY; };
     const updateEntrance = () => {
       frame = 0;
@@ -38,6 +39,12 @@ export function Services() {
     };
     const onScroll = () => {
       const y = window.scrollY;
+      if (mobile.matches) {
+        phase = y < top ? "before" : "after";
+        previousY = y;
+        if (!frame) frame = requestAnimationFrame(updateEntrance);
+        return;
+      }
       if (phase === "before" && previousY < top && y >= top) {
         phase = "reading";
         activeRef.current = 0;
@@ -57,6 +64,7 @@ export function Services() {
       setActive(index);
     };
     const onWheel = (event: WheelEvent) => {
+      if (mobile.matches) return;
       if (event.ctrlKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
       const direction = Math.sign(event.deltaY);
       const now = performance.now();
