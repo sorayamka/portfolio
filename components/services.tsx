@@ -15,23 +15,16 @@ const services = [
 export function Services() {
   const t = useText();
   const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
   const selectSkill = (index: number) => {
-    activeRef.current = index;
     setActive(index);
   };
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    let phase: "before" | "reading" | "after" = "before";
     let top = 0;
-    let lastWheel = -Infinity;
-    let lastDirection = 0;
     let frame = 0;
-    let previousY = window.scrollY;
-    const mobile = matchMedia("(max-width: 700px), (pointer: coarse)");
     const measure = () => { top = section.getBoundingClientRect().top + window.scrollY; };
     const updateEntrance = () => {
       frame = 0;
@@ -40,71 +33,15 @@ export function Services() {
       section.style.setProperty("--text-visible", progress > 0.9 ? "1" : "0");
     };
     const onScroll = () => {
-      const y = window.scrollY;
-      if (mobile.matches) {
-        phase = y < top ? "before" : "after";
-        previousY = y;
-        if (!frame) frame = requestAnimationFrame(updateEntrance);
-        return;
-      }
-      if (phase === "before" && previousY < top && y >= top) {
-        phase = "reading";
-        activeRef.current = 0;
-        setActive(0);
-      } else if (phase === "after" && previousY > top && y <= top) {
-        phase = "reading";
-        activeRef.current = services.length - 1;
-        setActive(services.length - 1);
-      }
-      if (phase === "reading" && Math.abs(y - top) > 1) window.scrollTo({ top, behavior: "instant" });
-      previousY = phase === "reading" ? top : y;
       if (!frame) frame = requestAnimationFrame(updateEntrance);
     };
     const onResize = () => { measure(); onScroll(); };
-    const show = (index: number) => {
-      activeRef.current = index;
-      setActive(index);
-    };
-    const onWheel = (event: WheelEvent) => {
-      if (mobile.matches) return;
-      if (event.ctrlKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-      const direction = Math.sign(event.deltaY);
-      const now = performance.now();
-      const fresh = direction !== lastDirection || now - lastWheel > 140;
-      lastWheel = now;
-      lastDirection = direction;
-      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
-      const y = window.scrollY;
-      const crossingDown = direction > 0 && phase === "before" && y <= top + 2 && y + delta >= top;
-      const crossingUp = direction < 0 && phase === "after" && y >= top - 2 && y + delta <= top;
-      const atScene = Math.abs(y - top) <= 2;
-      if (crossingDown || crossingUp || (atScene && phase !== "reading" && ((phase === "before" && direction > 0) || (phase === "after" && direction < 0)))) {
-        event.preventDefault();
-        phase = "reading";
-        show(direction > 0 ? 0 : services.length - 1);
-        window.scrollTo({ top, behavior: "instant" });
-        onScroll();
-        return;
-      }
-      if (phase !== "reading") return;
-      if (!fresh) { event.preventDefault(); return; }
-      const next = activeRef.current + direction;
-      if (next < 0 || next >= services.length) {
-        phase = direction > 0 ? "after" : "before";
-        return;
-      }
-      event.preventDefault();
-      show(next);
-    };
     measure();
-    if (window.scrollY > top + 2) phase = "after";
     updateEntrance();
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("wheel", onWheel, true);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
@@ -130,7 +67,7 @@ export function Services() {
           ))}
           <div className="services-scroll-progress" role="tablist" aria-label={`Навык ${active + 1} из 5`}>
             {services.map((service, index) => <button key={service.title} type="button" role="tab" id={`skill-tab-${index}`} aria-controls={`skill-panel-${index}`} aria-selected={index === active} aria-label={t(service.title)} className="skill-tab" onClick={() => selectSkill(index)}><span>0{index + 1}</span></button>)}
-            <span className="label">0{active + 1} / 05 — SCROLL TO EXPLORE</span>
+            <span className="label">0{active + 1} / 05 — SELECT A SKILL</span>
           </div>
         </div>
       </div>
