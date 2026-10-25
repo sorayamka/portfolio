@@ -1,14 +1,8 @@
-import type { Metadata } from "next";
 import { WorkPage } from "@/components/work-page";
 import { Footer } from "@/components/footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Портфолио",
-  description:
-    "Работы и интерфейсы Ивана Севрюкова: приложения, Telegram-боты, AI-контент и UGC.",
-  alternates: { canonical: "/work" },
-  openGraph: { title: "Портфолио · Иван Севрюков", url: "/work" },
-};
+export const metadata = pageMetadata("/work", "Портфолио — Иван Севрюков", "Приложения, Telegram-боты, AI-контент и UGC: Штора, Sora и Generative Media Creator. Описание проектов, стек и примеры работ.");
 
 export default function Page() {
   return (

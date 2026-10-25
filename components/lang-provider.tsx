@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { english } from "@/lib/translations";
+import { usePathname, useRouter } from "next/navigation";
 
 type Lang = "ru" | "en";
 
@@ -55,12 +56,13 @@ const LangContext = createContext<{ lang: Lang; copy: Copy; setLang: (l: Lang) =
 );
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("ru");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem("ivan-lang");
-    if (saved === "en" || saved === "ru") setLang(saved);
-  }, []);
+  const pathname = usePathname();
+  const router = useRouter();
+  const lang: Lang = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "ru";
+  const setLang = (next: Lang) => {
+    const path = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+    router.push(next === "en" ? `/en${path}` : path, { scroll: false });
+  };
 
   useEffect(() => {
     document.documentElement.lang = lang;

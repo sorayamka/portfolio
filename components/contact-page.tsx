@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./localized-link";
 import { PageHeader } from "./ui";
 import { Magnetic } from "./magnetic";
 import { Reveal } from "./reveal";

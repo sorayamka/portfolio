@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./localized-link";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useLang } from "./lang-provider";
@@ -143,6 +143,7 @@ export function Home() {
 
   return (
     <main className="archive-home relative">
+      <h1 className="sr-only">{copy.lede}</h1>
       <Mascot />
       {/* Без z-index: он создал бы stacking context и разорвал бы
           mix-blend-difference у бегущей строки — инверсия пропала бы.

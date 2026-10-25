@@ -15,7 +15,7 @@ export function Mascot() {
   const winkAt = useRef(-10000);
 
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (pathname !== "/" && pathname !== "/en" && pathname !== "/en/") return;
     const wrap = wrapRef.current;
     const gaze = gazeRef.current;
     const left = leftEyeRef.current;
@@ -119,7 +119,7 @@ export function Mascot() {
     };
   }, [pathname]);
 
-  if (pathname !== "/") return null;
+  if (pathname !== "/" && pathname !== "/en" && pathname !== "/en/") return null;
 
   return (
     <button

@@ -31,7 +31,7 @@ export function Loader({ onDone }: { onDone?: () => void }) {
     let visible = 0;
 
     const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / total);
+      const t = Math.max(0, Math.min(1, (now - start) / total));
       const eased = 1 - Math.pow(1 - t, 3);
       const value = Math.round(eased * 100);
 

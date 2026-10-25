@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./localized-link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "./lang-provider";
@@ -34,7 +34,8 @@ export function TopBar() {
     };
   }, []);
 
-  const active = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const currentPath = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+  const active = (href: string) => (href === "/" ? currentPath === "/" : currentPath.startsWith(href));
 
   /* Панель всегда на тёмной теме: первый экран чёрный, и светлый герой
      здесь неуместен. Один набор токенов на весь сайт. */

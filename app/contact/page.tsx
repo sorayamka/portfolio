@@ -1,13 +1,7 @@
-import type { Metadata } from "next";
 import { ContactPage } from "@/components/contact-page";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Контакты",
-  description:
-    "Telegram, почта и GitHub Ивана Севрюкова. Открыт к проектам, Москва, MSK (UTC+3).",
-  alternates: { canonical: "/contact" },
-  openGraph: { title: "Контакты · Иван Севрюков", url: "/contact" },
-};
+export const metadata = pageMetadata("/contact", "Контакты — Иван Севрюков", "Связаться с Иваном Севрюковым: Telegram, электронная почта и GitHub. Обсуждение Telegram-ботов, AI-интеграций и разработки.");
 
 export default function Page() {
   return <ContactPage />;

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { CaseStudyRoute } from "@/components/case-study";
 import { bySlug, projects } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
 type Params = { slug: string };
 export const dynamicParams = false;
@@ -38,12 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const project = bySlug(slug);
   if (!project) return { title: "Проект не найден" };
 
-  return {
-    title: project.title,
-    description: project.summary,
-    alternates: { canonical: `/work/${project.slug}` },
-    openGraph: { title: `${project.title} · Иван Севрюков`, url: `/work/${project.slug}` },
-  };
+  return pageMetadata(`/work/${project.slug}`, `${project.title} — Иван Севрюков`, project.summary);
 }
 
 export default function Page({ params }: { params: Promise<Params> }) {

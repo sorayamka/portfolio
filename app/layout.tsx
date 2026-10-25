@@ -18,7 +18,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://isevryukov.dev"),
+  metadataBase: new URL("https://sorayamka.github.io/portfolio/"),
   title: {
     default: `${site.name} — ${site.role}, ${site.city}`,
     template: `%s · ${site.short} ${site.name.split(" ")[1]}`,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: site.name,
     title: `${site.name} — ${site.role}, ${site.city}`,
     description: "Портфолио разработчика из Москвы. Интерфейсы, 3D, эксперименты.",
-    url: "https://isevryukov.dev",
+    url: "https://sorayamka.github.io/portfolio/",
   },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
@@ -61,6 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="ru" className={`${interTight.variable} ${jetbrains.variable} antialiased`}>
       <body className="grain">
         <Shell>{children}</Shell>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@graph": [{ "@type": "Person", "@id": "https://sorayamka.github.io/portfolio/#person", name: "Ivan Sevrukov", alternateName: site.name, url: "https://sorayamka.github.io/portfolio/", jobTitle: "Python, Telegram & AI developer", sameAs: [site.github, site.telegram] }, { "@type": "WebSite", "@id": "https://sorayamka.github.io/portfolio/#website", url: "https://sorayamka.github.io/portfolio/", name: "Ivan Sevrukov — Portfolio", inLanguage: ["ru", "en"], author: { "@id": "https://sorayamka.github.io/portfolio/#person" } }] }) }} />
       </body>
     </html>
   );

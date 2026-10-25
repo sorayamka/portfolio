@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "./localized-link";
 import { notFound } from "next/navigation";
 import { Empty } from "./ui";
 import { Magnetic } from "./magnetic";
@@ -28,6 +28,7 @@ function CaseStudy({ project: original }: { project: Project }) {
   const [selectedFeature, setSelectedFeature] = useState(0);
   return (
     <main className="case-page relative z-10 px-5 pt-32 pb-24 sm:px-8 sm:pt-40 sm:pb-32">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: lang === "en" ? "Home" : "Главная", item: `https://sorayamka.github.io/portfolio/${lang === "en" ? "en/" : ""}` }, { "@type": "ListItem", position: 2, name: t("Портфолио"), item: `https://sorayamka.github.io/portfolio/${lang === "en" ? "en/" : ""}work/` }, { "@type": "ListItem", position: 3, name: project.title, item: `https://sorayamka.github.io/portfolio/${lang === "en" ? "en/" : ""}work/${project.slug}/` }] }).replace(/</g, "\\u003c") }} />
       <Reveal className="mb-10 flex items-center gap-3">
         <Link href="/work" className="label text-smoke transition-colors duration-300 hover:text-amber">
           {t("← портфолио")}

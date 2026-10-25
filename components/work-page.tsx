@@ -1,7 +1,7 @@
 "use client";
 
 import { PageHeader } from "./ui";
-import Link from "next/link";
+import Link from "./localized-link";
 import { projects, site } from "@/lib/content";
 import { useLang, useText } from "./lang-provider";
 import { localizeProject } from "@/lib/translations";
